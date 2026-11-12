@@ -1,0 +1,9 @@
+/.env
+/.env.*
+/.vercel
+/vendor
+/tests
+/.phpunit.result.cache
+/bootstrap/cache/*.php
+/storage/app/private
+/storage/logs/*.log

@@ -1,0 +1,26 @@
+@import '@fontsource-variable/dm-sans';
+@import '@fontsource/instrument-serif/latin-400.css';
+@import '@fontsource/instrument-serif/latin-400-italic.css';
+
+:root {
+  color-scheme: light;
+  --serif: "Instrument Serif", Georgia, serif;
+  --sans: "DM Sans Variable", Arial, sans-serif;
+  --ink: #2a1714;
+  --wine: #7b281e;
+  --muted: #6f5145;
+  --cream: #f9f0e2;
+  --gold: #efb76e;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--sans); line-height: 1.5; }
+body:has(dialog[open]) { overflow: hidden; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid #bd6b29; outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

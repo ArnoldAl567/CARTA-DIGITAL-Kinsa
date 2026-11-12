@@ -1,0 +1,53 @@
+<dialog #drawer aria-labelledby="order-title" (click)="$event.target === drawer && close()">
+  <section class="drawer">
+    <header>
+      <h2 id="order-title">Tu pedido</h2>
+      <button type="button" class="close" aria-label="Cerrar pedido" (click)="close()">×</button>
+    </header>
+
+    @if (lines().length === 0) {
+      <p class="empty">Agrega tus platos favoritos para empezar.</p>
+      <button type="button" class="send" (click)="close()">Volver a la carta</button>
+    } @else {
+      <ul class="lines">
+        @for (line of lines(); track line.product.slug) {
+          <li>
+            <img [src]="line.product.image" alt="" width="58" height="58">
+            <div class="line-info">
+              <strong>{{ line.product.name }}</strong>
+              <span>{{ price(line.product.price_cents) }} c/u</span>
+              <div class="adjust">
+                <button type="button" (click)="changed.emit({slug: line.product.slug, delta: -1})"
+                  [attr.aria-label]="'Quitar una unidad de ' + line.product.name">−</button>
+                <span>{{ line.quantity }}</span>
+                <button type="button" [disabled]="line.quantity >= 99"
+                  (click)="changed.emit({slug: line.product.slug, delta: 1})"
+                  [attr.aria-label]="'Sumar una unidad de ' + line.product.name">+</button>
+              </div>
+            </div>
+            <div class="line-price">
+              <strong>{{ price(line.subtotal) }}</strong>
+              <button type="button" (click)="removed.emit(line.product.slug)"
+                [attr.aria-label]="'Eliminar ' + line.product.name">Eliminar</button>
+            </div>
+          </li>
+        }
+      </ul>
+      <div class="checkout">
+        <div class="total"><strong>Total</strong><strong>{{ price(total()) }}</strong></div>
+        <label>Tu nombre
+          <input name="customer" [(ngModel)]="name" required maxlength="80" autocomplete="name" placeholder="Nombre del cliente">
+        </label>
+        <label><span>Observaciones <small>(opcional)</small></span>
+          <textarea name="notes" [(ngModel)]="notes" maxlength="400" rows="2" placeholder="Indicaciones para tu pedido"></textarea>
+        </label>
+        @if (name.trim()) {
+          <a [href]="checkoutUrl" class="send" target="_blank" rel="noopener noreferrer">Enviar pedido por WhatsApp</a>
+        } @else {
+          <button type="button" class="send" disabled>Enviar pedido por WhatsApp</button>
+        }
+        <p class="hint">Revisa y envía el mensaje desde WhatsApp para que el restaurante confirme tu pedido.</p>
+      </div>
+    }
+  </section>
+</dialog>

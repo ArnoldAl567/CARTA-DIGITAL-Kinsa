@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "angular",
+  "outputDirectory": "dist/kinsa-carta/browser",
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://carta-digital-kinsa-api.vercel.app/api/:path*"
+    }
+  ]
+}

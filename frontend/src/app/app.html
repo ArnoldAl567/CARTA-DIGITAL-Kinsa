@@ -1,0 +1,109 @@
+<a class="skip" href="#carta">Saltar a la carta</a>
+
+<div class="masthead" id="inicio">
+  <header class="top shell">
+    <a href="#inicio" class="brand" aria-label="Kinsa T’iqsi, inicio">
+      <img src="/images/logo.webp" alt="" width="88" height="88">
+      <span>KINSA T’IQSI</span>
+    </a>
+    <nav aria-label="Principal">
+      <a href="#carta" class="nav-menu">Nuestra carta</a>
+      <button type="button" class="header-order" (click)="drawer.open()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l2 13H3L5 8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+        Mi pedido @if (count()) { <span>{{ count() }}</span> }
+      </button>
+    </nav>
+  </header>
+
+  <section class="hero shell" aria-labelledby="welcome">
+    <div class="hero-copy">
+      <h1 id="welcome">Sabor que viene<br><em>de familia.</em></h1>
+      <p>Pollo broaster, alitas y combos para compartir.</p>
+      <div class="hero-actions">
+        <a href="#carta" class="button primary">Explorar la carta <span aria-hidden="true">↓</span></a>
+        <a [href]="whatsapp" target="_blank" rel="noopener noreferrer" class="button secondary">Pedir por WhatsApp <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+    <figure class="hero-visual">
+      <img src="/images/portada/pareja-768.webp"
+        srcset="/images/portada/pareja-768.webp 768w, /images/portada/pareja-1536.webp 1536w"
+        sizes="(max-width: 760px) calc(100vw - 36px), (max-width: 1312px) 55vw, 710px"
+        alt="Una pareja comparte pollo broaster y papas fritas con el logo de Kinsa T’iqsi al fondo"
+        fetchpriority="high" width="1536" height="1024">
+    </figure>
+  </section>
+</div>
+
+<main class="shell menu" id="carta" tabindex="-1">
+  <div class="menu-head">
+    <h2>Nuestra carta</h2>
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="5.5"/><path d="m15 15 5 5"/></svg>
+      <input type="search" placeholder="Buscar un plato" aria-label="Buscar un plato" [value]="query()"
+        (input)="query.set($any($event.target).value)">
+    </label>
+  </div>
+
+  @switch (status()) {
+    @case ('loading') {
+      <p class="state" role="status">Cargando la carta…</p>
+    }
+    @case ('error') {
+      <div class="state" role="alert">
+        <p>No pudimos cargar la carta.</p>
+        <button type="button" class="button primary" (click)="load()">Volver a intentar</button>
+      </div>
+    }
+    @case ('ready') {
+      <nav class="categories" aria-label="Categorías de la carta">
+        <button type="button" [attr.aria-pressed]="!category()" (click)="category.set('')">Todos</button>
+        @for (group of categories(); track group.slug) {
+          <button type="button" [attr.aria-pressed]="category() === group.slug"
+            (click)="category.set(group.slug)">{{ group.short_name }}</button>
+        }
+      </nav>
+
+      @for (group of visible(); track group.slug) {
+        <section class="group" [attr.aria-labelledby]="'section-' + group.slug">
+          <h3 [id]="'section-' + group.slug">{{ group.name }}</h3>
+          <div class="products">
+            @for (product of group.products; track product.slug) {
+              <app-product-card [product]="product" (added)="add($event)" />
+            }
+          </div>
+        </section>
+      } @empty {
+        <div class="state">
+          @if (query() || category()) {
+            <p>No encontramos platos con estos filtros.</p>
+            <button type="button" class="button primary" (click)="clearFilters()">Ver toda la carta</button>
+          } @else {
+            <p>Por el momento la carta está vacía.</p>
+          }
+        </div>
+      }
+    }
+  }
+</main>
+
+<footer>
+  <div class="shell foot">
+    <a href="#inicio" class="brand" aria-label="Kinsa T’iqsi, volver al inicio">
+      <img src="/images/logo.webp" alt="" width="48" height="48"><span>KINSA T’IQSI</span>
+    </a>
+    <a [href]="whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp +51 963 157 142 ↗</a>
+  </div>
+</footer>
+
+<div class="floating">
+  <div class="notice" role="status" aria-live="polite" [class.visible]="notice()">{{ notice() }}</div>
+  <button class="basket" type="button" (click)="drawer.open()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 8h14l2 13H3L5 8Z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+    @if (count()) { <span class="count">{{ count() }}</span> }
+    <span>Ver mi pedido</span>
+    @if (count()) { <strong>{{ price(total()) }}</strong> }
+  </button>
+</div>
+
+<app-order-drawer #drawer [lines]="lines()" [total]="total()"
+  (changed)="order.change($event.slug, $event.delta)" (removed)="order.remove($event)" />
