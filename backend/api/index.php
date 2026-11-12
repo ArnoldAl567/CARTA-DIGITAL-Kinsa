@@ -1,5 +1,9 @@
 <?php
 
+// Laravel routes are relative to the public site root, including /api.
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['PHP_SELF'] = '/index.php';
+
 // Vercel's function bundle is read-only. Laravel can build its caches in /tmp.
 if (DIRECTORY_SEPARATOR === '/') {
     $cache = sys_get_temp_dir();
