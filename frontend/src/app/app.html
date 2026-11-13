@@ -20,8 +20,8 @@
       <picture>
         <source type="image/webp" [attr.srcset]="coverFallback() ? null : coverSources"
           sizes="(max-width: 480px) calc(100vw - 34px), (max-width: 760px) calc(100vw - 46px), (max-width: 1392px) 56vw, 744px">
-        <img src="/images/portada/pareja-mural-768.jpg"
-          alt="Una pareja comparte pollo broaster con el mural amarillo de Kinsa T’iqsi detrás"
+        <img src="/images/portada/pareja-joven-768.jpg"
+          alt="Una pareja joven comparte pollo broaster con el mural amarillo de Kinsa T’iqsi detrás"
           fetchpriority="high" width="1536" height="1024" (error)="coverFallback.set(true)">
       </picture>
     </figure>
