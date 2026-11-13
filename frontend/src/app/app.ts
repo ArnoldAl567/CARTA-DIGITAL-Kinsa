@@ -5,6 +5,7 @@ import { MenuService } from './menu/menu.service';
 import { ProductCard } from './menu/product-card';
 import { OrderDrawer } from './order/order-drawer';
 import { OrderService, soles, WHATSAPP } from './order/order.service';
+import { SiteFooter } from './site-footer';
 
 function searchable(value: string): string {
   return value.toLocaleLowerCase('es-PE').normalize('NFD').replace(/\p{M}/gu, '').trim();
@@ -12,7 +13,7 @@ function searchable(value: string): string {
 
 @Component({
   selector: 'app-root',
-  imports: [ProductCard, OrderDrawer],
+  imports: [ProductCard, OrderDrawer, SiteFooter],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

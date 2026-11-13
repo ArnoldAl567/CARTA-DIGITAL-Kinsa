@@ -46,8 +46,6 @@ svg { width: 20px; height: 20px; flex: none; }
 .products { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .state { border-radius: 13px; padding: 22px; margin-top: 20px; background: #fff8ed; border: 1px solid #edddce; }
 .state p { margin: 0 0 12px; }
-footer { background: #321719; color: #ffeeda; }
-.foot { display: flex; gap: 18px; justify-content: space-between; align-items: center; flex-wrap: wrap; padding-block: 24px 85px; font-size: .9rem; }
 .floating { z-index: 4; position: fixed; right: max(18px, env(safe-area-inset-right)); bottom: max(18px, env(safe-area-inset-bottom)); display: grid; gap: 7px; justify-items: end; pointer-events: none; max-width: calc(100% - 36px); }
 .basket { display: flex; align-items: center; gap: 9px; pointer-events: auto; min-height: 51px; padding: 8px 15px; border: 1px solid #9b5841; border-radius: 12px; background: #501e1b; color: #fff8ee; font-weight: 700; box-shadow: 0 9px 25px #3c171c35; }
 .basket:hover { background: #69271f; }
