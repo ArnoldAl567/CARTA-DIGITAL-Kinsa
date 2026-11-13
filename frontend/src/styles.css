@@ -6,11 +6,15 @@
   color-scheme: light;
   --serif: "Instrument Serif", Georgia, serif;
   --sans: "DM Sans Variable", Arial, sans-serif;
-  --ink: #2a1714;
-  --wine: #7b281e;
-  --muted: #6f5145;
-  --cream: #f9f0e2;
-  --gold: #efb76e;
+  --ink: #281318;
+  --wine: #9d203a;
+  --muted: #70515a;
+  --cream: #fff5e8;
+  --gold: #ffbc4c;
+  --hot: #ff7351;
+  --deep: #310b19;
+  --paper: #fffdfa;
+  --line: #ecd8cc;
 }
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -21,6 +25,7 @@ button { cursor: pointer; }
 button:disabled { cursor: default; }
 a { color: inherit; }
 :focus-visible { outline: 3px solid #bd6b29; outline-offset: 3px; }
+button, a { -webkit-tap-highlight-color: #b12f4130; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }

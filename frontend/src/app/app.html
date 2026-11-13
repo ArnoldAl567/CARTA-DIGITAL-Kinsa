@@ -19,14 +19,14 @@
     <figure class="hero-visual">
       <picture>
         <source type="image/webp" [attr.srcset]="coverFallback() ? null : coverSources"
-          sizes="(max-width: 480px) calc(100vw - 34px), (max-width: 760px) calc(100vw - 46px), (max-width: 1392px) 56vw, 744px">
+          sizes="(max-width: 759px) calc(100vw - 38px), (max-width: 1272px) 54vw, 690px">
         <img src="/images/portada/pareja-joven-768.jpg"
           alt="Una pareja joven comparte pollo broaster con el mural amarillo de Kinsa T’iqsi detrás"
           fetchpriority="high" width="1536" height="1024" (error)="coverFallback.set(true)">
       </picture>
     </figure>
     <div class="hero-copy">
-      <h1 id="welcome">Sabor que viene<br><em>de familia.</em></h1>
+      <h1 id="welcome">Sabor que viene <em>de familia.</em></h1>
       <p>Pollo broaster, alitas y combos para compartir.</p>
       <div class="hero-actions">
         <a href="#carta" class="button primary">Explorar la carta <span aria-hidden="true">↓</span></a>
@@ -60,8 +60,8 @@
       <nav class="categories" aria-label="Categorías de la carta">
         <button type="button" [attr.aria-pressed]="!category()" (click)="category.set('')">Todos</button>
         @for (group of categories(); track group.slug) {
-          <button type="button" [attr.aria-pressed]="category() === group.slug"
-            (click)="category.set(group.slug)">{{ group.short_name }}</button>
+          <button type="button" [attr.data-category]="group.slug" [attr.aria-pressed]="category() === group.slug"
+            (click)="category.set(group.slug)"><span class="category-dot" aria-hidden="true"></span>{{ group.short_name }}</button>
         }
       </nav>
 
