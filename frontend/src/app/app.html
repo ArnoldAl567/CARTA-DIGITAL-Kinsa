@@ -17,11 +17,13 @@
 
   <section class="hero shell" aria-labelledby="welcome">
     <figure class="hero-visual">
-      <img src="/images/portada/pareja-mural-768.webp"
-        srcset="/images/portada/pareja-mural-768.webp 768w, /images/portada/pareja-mural-1536.webp 1536w"
-        sizes="(max-width: 480px) calc(100vw - 34px), (max-width: 760px) calc(100vw - 46px), (max-width: 1392px) 56vw, 744px"
-        alt="Una pareja comparte pollo broaster con el mural amarillo de Kinsa T’iqsi detrás"
-        fetchpriority="high" width="1536" height="1024">
+      <picture>
+        <source type="image/webp" [attr.srcset]="coverFallback() ? null : coverSources"
+          sizes="(max-width: 480px) calc(100vw - 34px), (max-width: 760px) calc(100vw - 46px), (max-width: 1392px) 56vw, 744px">
+        <img src="/images/portada/pareja-mural-768.jpg"
+          alt="Una pareja comparte pollo broaster con el mural amarillo de Kinsa T’iqsi detrás"
+          fetchpriority="high" width="1536" height="1024" (error)="coverFallback.set(true)">
+      </picture>
     </figure>
     <div class="hero-copy">
       <h1 id="welcome">Sabor que viene<br><em>de familia.</em></h1>

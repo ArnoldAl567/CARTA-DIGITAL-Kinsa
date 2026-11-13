@@ -22,6 +22,8 @@ export class App {
   readonly order = inject(OrderService);
   readonly price = soles;
   readonly whatsapp = WHATSAPP;
+  readonly coverSources = '/images/portada/pareja-mural-768.webp 768w, /images/portada/pareja-mural-1536.webp 1536w';
+  readonly coverFallback = signal(false);
   readonly categories = signal<Category[]>([]);
   readonly status = signal<'loading' | 'ready' | 'error'>('loading');
   readonly category = signal('');
