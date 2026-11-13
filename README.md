@@ -46,7 +46,7 @@ Requisitos: PHP 8.3 o superior con `pdo_pgsql`, Composer, PostgreSQL y Node.js 2
 
 La carga inicial está en `backend/database/seeders/MenuSeeder.php`. Si cambias el archivo, aplica los cambios con `php artisan db:seed --class=MenuSeeder`. Los productos se actualizan por su identificador y los importes se expresan en céntimos.
 
-Las imágenes de `frontend/public/images/catalogo` son versiones generadas con IA a partir de las referencias del PDF. Para sustituir una foto, usa el mismo nombre de archivo y un encuadre 3:2 que muestre el plato completo. La portada muestra el mural proporcionado para Kinsa T’iqsi, guardado como `frontend/public/images/portada/mural-kinsa.webp`.
+Las imágenes de `frontend/public/images/catalogo` son versiones generadas con IA a partir de las referencias del PDF. Para sustituir una foto, usa el mismo nombre de archivo y un encuadre 3:2 que muestre el plato completo. La portada combina la foto de la pareja con el mural de Kinsa T’iqsi y está disponible en dos resoluciones en `frontend/public/images/portada`.
 
 ## Compilación y publicación
 
