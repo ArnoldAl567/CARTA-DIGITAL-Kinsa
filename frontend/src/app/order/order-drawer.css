@@ -11,8 +11,12 @@ li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; p
 li img { width: clamp(44px, 15vw, 66px); height: auto; object-fit: contain; border-radius: 10px; background: var(--deep); }
 .line-info, .line-price { display: grid; gap: 5px; }
 .line-info > span { font-size: .84rem; color: var(--muted); }
-.line-price { text-align: right; }
-.line-price button { color: var(--wine); min-height: 44px; padding: 0; background: none; border: 0; text-decoration: underline; font-size: .8rem; }
+.line-price { align-self: stretch; align-content: space-between; justify-items: end; }
+.remove { min-height: 44px; padding: 0 10px; border: 1px solid #edc4ce; border-radius: 10px; color: var(--wine); background: #fff2f5; font-size: .8rem; font-weight: 750; transition: background .16s, border-color .16s; }
+.remove:active { background: #f5ced9; border-color: var(--wine); }
+@media (hover: hover) {
+  .remove:hover { background: #f9e1e8; border-color: var(--wine); }
+}
 .adjust { display: flex; align-items: center; gap: 7px; }
 .adjust button { color: var(--wine); background: #f9e7ec; border: 0; border-radius: 10px; min-width: 44px; min-height: 44px; font-size: 1.2rem; }
 .adjust button:active, .send:active { transform: scale(.98); }

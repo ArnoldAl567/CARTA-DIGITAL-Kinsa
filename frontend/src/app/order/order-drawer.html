@@ -27,7 +27,7 @@
             </div>
             <div class="line-price">
               <strong>{{ price(line.subtotal) }}</strong>
-              <button type="button" (click)="removed.emit(line.product.slug)"
+              <button type="button" class="remove" (click)="removed.emit(line.product.slug)"
                 [attr.aria-label]="'Eliminar ' + line.product.name">Eliminar</button>
             </div>
           </li>
