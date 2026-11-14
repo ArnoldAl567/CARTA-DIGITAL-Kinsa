@@ -1,0 +1,22 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "angular",
+  "outputDirectory": "dist/kinsa-carta/browser",
+  "rewrites": [
+    {
+      "source": "/administrar",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/api/:path*",
+      "has": [
+        { "type": "host", "value": "carta-kinsa-(?:git-codex-panel-y-pedidos|[a-z0-9]{9})-arnold-s-projects7\\.vercel\\.app" }
+      ],
+      "destination": "https://carta-kinsa-api-pruebas.vercel.app/api/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://carta-digital-kinsa-api.vercel.app/api/:path*"
+    }
+  ]
+}
