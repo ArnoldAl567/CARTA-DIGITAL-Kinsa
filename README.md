@@ -9,7 +9,8 @@ La carta carga los productos y precios desde PostgreSQL a través de Laravel. An
 | `frontend/src/app/menu` | Catálogo, consulta a la API y tarjeta de producto |
 | `frontend/src/app/order` | Carrito, cantidades, total y mensaje de WhatsApp |
 | `frontend/public/images` | Logo, recortes originales y versiones WebP del catálogo |
-| `backend/routes` y `backend/app` | API `GET /api/menu`, controlador y modelos |
+| `frontend/src/app/admin` | Panel de administración en `/administrar` |
+| `backend/routes` y `backend/app` | API de la carta, inicio de sesión y administración del catálogo |
 | `backend/database` | Migración de PostgreSQL y carga inicial del catálogo |
 
 ## Cómo iniciar
@@ -44,9 +45,17 @@ Requisitos: PHP 8.3 o superior con `pdo_pgsql`, Composer, PostgreSQL y Node.js 2
 
 ## Catálogo y fotografías
 
-La carga inicial está en `backend/database/seeders/MenuSeeder.php`. Si cambias el archivo, aplica los cambios con `php artisan db:seed --class=MenuSeeder`. Los productos se actualizan por su identificador y los importes se expresan en céntimos.
+La carga inicial está en `backend/database/seeders/MenuSeeder.php`. El seeder registra los platos iniciales que falten y conserva las ediciones de los que ya existen. Los importes se guardan en céntimos.
 
-Las imágenes de `frontend/public/images/catalogo` son versiones generadas con IA a partir de las referencias del PDF. Para sustituir una foto, usa el mismo nombre de archivo y un encuadre 3:2 que muestre el plato completo. La portada combina la foto de la pareja con el mural de Kinsa T’iqsi y está disponible en dos resoluciones en `frontend/public/images/portada`.
+Las imágenes iniciales de `frontend/public/images/catalogo` son versiones generadas con IA a partir de las referencias del PDF. La portada combina la foto de la pareja con el mural de Kinsa T’iqsi y está disponible en dos resoluciones en `frontend/public/images/portada`.
+
+## Administrar la carta
+
+1. En `backend`, aplica las migraciones con `php artisan migrate`.
+2. Crea la cuenta del dueño con `php artisan admin:cuenta correo@ejemplo.com`. La consola pedirá la contraseña de forma interactiva. Agrega `--actualizar` para cambiar la contraseña de una cuenta existente.
+3. Abre [el panel local](http://127.0.0.1:4200/administrar) e inicia sesión.
+
+Desde el panel puedes registrar y editar hasta 30 platos. El límite incluye platos ocultos. Puedes cambiar su nombre, categoría, descripción, precio y visibilidad. Las fotos JPG, PNG o WebP de hasta 2 MB se guardan en PostgreSQL y se sirven a través de la API. Recarga la carta pública para ver los cambios.
 
 ## Compilación y publicación
 
@@ -54,4 +63,5 @@ Las imágenes de `frontend/public/images/catalogo` son versiones generadas con I
 - Ejecuta `npm run build` en `frontend` para generar `frontend/dist/kinsa-carta/browser`.
 - Publica Laravel con `backend/public` como raíz, PostgreSQL configurado y `APP_DEBUG=false`. Ejecuta `php artisan migrate --force` y carga el catálogo con `php artisan db:seed --force` cuando inicialices la base.
 - En Vercel, crea un proyecto para `backend` y otro para `frontend` con esas carpetas como raíces. El backend usa el runtime comunitario de PHP y Node.js 22 para la compilación. El frontend incluye una reescritura de `/api/*` a `https://carta-digital-kinsa-api.vercel.app`. Si la API recibe otro dominio, ajusta `frontend/vercel.json`. [Documentación de reescrituras de Vercel](https://vercel.com/docs/routing/rewrites)
-- Conecta Neon al proyecto del backend mediante `DATABASE_URL`. Configura `DB_CONNECTION=pgsql`, `DB_SSLMODE=require`, `APP_ENV=production`, `APP_DEBUG=false`, `LOG_CHANNEL=stderr`, `CACHE_STORE=array`, `SESSION_DRIVER=array`, `QUEUE_CONNECTION=sync` y una `APP_KEY` propia para producción. Ejecuta las migraciones y la carga inicial con la conexión de Neon antes de abrir la carta al público.
+- Conecta Neon al proyecto del backend mediante `DATABASE_URL`. Configura `DB_CONNECTION=pgsql`, `DB_SSLMODE=require`, `APP_ENV=production`, `APP_DEBUG=false`, `LOG_CHANNEL=stderr`, `CACHE_STORE=array`, `SESSION_DRIVER=database`, `SESSION_SECURE_COOKIE=true`, `QUEUE_CONNECTION=sync` y una `APP_KEY` propia para cada entorno. Ejecuta las migraciones antes de habilitar el panel y usa la carga inicial para una base nueva.
+- Para las pruebas del dueño, apunta la reescritura de `/api/*` del frontend de pruebas a su propio backend. Configura ese backend con la conexión de una rama de Neon dedicada a pruebas y crea la cuenta del dueño en esa base. [Documentación de ramas en Neon](https://neon.com/docs/introduction/branching)

@@ -4,6 +4,10 @@
   "outputDirectory": "dist/kinsa-carta/browser",
   "rewrites": [
     {
+      "source": "/administrar",
+      "destination": "/index.html"
+    },
+    {
       "source": "/api/:path*",
       "destination": "https://carta-digital-kinsa-api.vercel.app/api/:path*"
     }

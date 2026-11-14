@@ -13,6 +13,7 @@ class Category extends Model
     {
         return $this->hasMany(Product::class)
             ->select('category_id', 'slug', 'name', 'description', 'price_cents', 'image')
+            ->where('available', true)
             ->orderBy('position');
     }
 }

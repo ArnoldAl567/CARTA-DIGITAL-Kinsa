@@ -52,7 +52,7 @@ class MenuSeeder extends Seeder
                 ]);
 
                 foreach ($products as $productPosition => [$productSlug, $productName, $price, $description]) {
-                    Product::updateOrCreate(['slug' => $productSlug], [
+                    Product::firstOrCreate(['slug' => $productSlug], [
                         'category_id' => $category->id,
                         'name' => $productName,
                         'description' => $description,

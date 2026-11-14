@@ -18,10 +18,17 @@ li img { width: clamp(44px, 15vw, 66px); height: auto; object-fit: contain; bord
 .adjust button:active, .send:active { transform: scale(.98); }
 .checkout { display: grid; gap: 12px; margin-top: 16px; padding: 12px; border: 1px solid var(--line); border-radius: 17px; background: var(--paper); }
 .total { display: flex; justify-content: space-between; padding: 10px 12px; border-radius: 11px; background: #ffe7bd; color: var(--deep); font-size: 1.16rem; }
+.fulfillment { border: 0; min-width: 0; padding: 0; margin: 0; }
+.fulfillment legend { margin-bottom: 6px; padding: 0; font-weight: 750; }
+.methods { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.method { display: flex; justify-content: center; align-items: center; gap: 6px; padding: 8px; min-height: 48px; border: 1px solid #d8bfb3; border-radius: 11px; background: var(--paper); font-size: .87rem; font-weight: 700; }
+.method[aria-pressed=true] { background: #f9e7ec; border-color: var(--wine); color: var(--wine); }
 label { display: grid; gap: 5px; font-weight: 650; }
 label small, .hint, .empty { color: var(--muted); font-weight: 400; }
 label small { font-size: .8rem; }
 input, textarea { min-width: 0; padding: 11px; border-radius: 11px; border: 1px solid #d8bfb3; background: var(--paper); font-size: 1rem; }
+input[aria-invalid=true] { border-color: var(--wine); }
+label .field-error { color: var(--wine); }
 textarea { resize: vertical; }
 .send { background: #17623d; color: white; border: 0; border-radius: 50px; padding: 14px 10px; font-weight: 800; text-align: center; text-decoration: none; }
 .send:hover:not(:disabled) { background: #1c4429; }

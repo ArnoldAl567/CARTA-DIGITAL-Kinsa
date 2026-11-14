@@ -1,0 +1,147 @@
+<header class="top">
+  <div class="shell top-inner">
+    <a class="brand" href="/">
+      <img src="/images/logo.webp" alt="" width="44" height="44">
+      <span>Kinsa T’iqsi</span>
+    </a>
+    <div class="top-actions">
+      <a href="/" target="_blank" rel="noopener">Ver carta <span aria-hidden="true">↗</span></a>
+      @if (account()) {
+        <button type="button" class="quiet" (click)="logout()" [disabled]="busy()">Salir</button>
+      }
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  @if (loading() && !catalog()) {
+    <p class="notice" role="status">Cargando el panel…</p>
+  } @else if (!account()) {
+    <section class="login panel">
+      <h1>Administrar carta</h1>
+      <p>Ingresa con tu cuenta para editar el catálogo.</p>
+      @if (error()) { <p class="alert" role="alert">{{ error() }}</p> }
+      <form #credentials="ngForm" (ngSubmit)="login(credentials)">
+        <label>Correo electrónico
+          <input name="email" type="email" ngModel required email maxlength="254" autocomplete="username">
+        </label>
+        <label>Contraseña
+          <input name="password" type="password" ngModel required maxlength="72" autocomplete="current-password">
+        </label>
+        <button class="primary" type="submit" [disabled]="credentials.invalid || busy()">
+          {{ busy() ? 'Ingresando…' : 'Ingresar' }}
+        </button>
+      </form>
+    </section>
+  } @else {
+    <div class="heading">
+      <div>
+        <h1>Administrar carta</h1>
+        @if (catalog(); as data) {
+          <p>{{ count() }} de {{ data.limit }} platos · {{ active() }} visibles</p>
+        }
+      </div>
+      @if (catalog(); as data) {
+        <button type="button" class="primary" (click)="edit()"
+          [disabled]="count() >= data.limit || !!draft() || busy()">+ Nuevo plato</button>
+      }
+    </div>
+
+    @if (saved()) { <p class="notice success" role="status">{{ saved() }}</p> }
+    @if (error() && !draft()) {
+      <div class="notice alert" role="alert">
+        {{ error() }}
+        <button type="button" class="secondary" (click)="loadCatalog()" [disabled]="loading()">Reintentar</button>
+      </div>
+    }
+
+    @if (catalog(); as data) {
+      @if (draft(); as item) {
+        <section class="panel editor" aria-labelledby="editor-title">
+          <h2 id="editor-title">{{ item.id ? 'Editar plato' : 'Nuevo plato' }}</h2>
+          <form #productForm="ngForm" (ngSubmit)="save(productForm)">
+            <div class="form-layout">
+              <div class="fields">
+                <label>Nombre
+                  <input id="nombre-plato" name="name" [(ngModel)]="item.name" required maxlength="100">
+                </label>
+                <div class="pair">
+                  <label>Categoría
+                    <select name="category" [(ngModel)]="item.categoryId" required>
+                      @for (category of data.categories; track category.id) {
+                        <option [ngValue]="category.id">{{ category.short_name }}</option>
+                      }
+                    </select>
+                  </label>
+                  <label>Precio en soles
+                    <input name="price" type="number" [(ngModel)]="item.price" required
+                      min="0.01" max="9999.99" step="0.01" inputmode="decimal">
+                  </label>
+                </div>
+                <label>Descripción
+                  <textarea name="description" [(ngModel)]="item.description" rows="3" maxlength="255"></textarea>
+                </label>
+                <label class="check">
+                  <input name="available" type="checkbox" [(ngModel)]="item.available">
+                  Mostrar en la carta
+                </label>
+              </div>
+              <div class="photo">
+                @if (preview() || item.image) {
+                  <img [src]="preview() || item.image" alt="Vista previa del plato">
+                } @else {
+                  <div class="empty-photo">Vista previa de la foto</div>
+                }
+                <label>{{ item.image ? 'Cambiar foto' : 'Foto del plato' }}
+                  <input type="file" accept="image/jpeg,image/png,image/webp" (change)="selectPhoto($any($event.target))">
+                </label>
+                <small>JPG, PNG o WebP · Hasta 2 MB</small>
+                @if (photoError()) { <p class="alert" role="alert">{{ photoError() }}</p> }
+              </div>
+            </div>
+            @if (error()) { <p class="alert" role="alert">{{ error() }}</p> }
+            <div class="form-actions">
+              <button type="button" class="secondary" (click)="cancel()" [disabled]="busy()">Cancelar</button>
+              <button type="submit" class="primary" [disabled]="productForm.invalid || busy() || !!photoError()">
+                {{ busy() ? 'Guardando…' : 'Guardar plato' }}
+              </button>
+            </div>
+          </form>
+        </section>
+      }
+
+      <section class="panel catalog" aria-labelledby="catalog-title">
+        <div class="catalog-top">
+          <h2 id="catalog-title">Platos</h2>
+          <input type="search" aria-label="Buscar por nombre" placeholder="Buscar por nombre"
+            [ngModel]="search()" (ngModelChange)="search.set($event)">
+        </div>
+        @if (count() >= data.limit) {
+          <p class="limit">Llegaste al máximo de {{ data.limit }} platos. Puedes seguir editando los registrados.</p>
+        }
+        @if (filtered().length) {
+          <ul class="products">
+            @for (product of filtered(); track product.id) {
+              <li>
+                <img [src]="product.image" alt="" width="70" height="55" loading="lazy">
+                <div class="product-name">
+                  <strong>{{ product.name }}</strong>
+                  <span>{{ categoryName(product.category_id) }}</span>
+                </div>
+                <span class="state" [class.hidden]="!product.available">
+                  {{ product.available ? 'Visible' : 'Oculto' }}
+                </span>
+                <strong class="product-price">{{ price(product.price_cents) }}</strong>
+                <button type="button" class="secondary edit" (click)="edit(product)"
+                  [disabled]="busy() || !!draft()"
+                  [attr.aria-label]="'Editar ' + product.name">Editar</button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <p class="empty">{{ search() ? 'No encontramos platos con ese nombre.' : 'Todavía no hay platos registrados.' }}</p>
+        }
+      </section>
+    }
+  }
+</main>

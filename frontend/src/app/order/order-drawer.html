@@ -1,4 +1,4 @@
-<dialog #drawer aria-labelledby="order-title" (click)="$event.target === drawer && close()">
+<dialog #drawer aria-labelledby="order-title" (click)="closeOnBackdrop($event)">
   <section class="drawer">
     <header>
       <h2 id="order-title">Tu pedido</h2>
@@ -34,19 +34,57 @@
         }
       </ul>
       <div class="checkout">
-        <div class="total"><strong>Total</strong><strong>{{ price(total()) }}</strong></div>
-        <label>Tu nombre
-          <input name="customer" [(ngModel)]="name" required maxlength="80" autocomplete="name" placeholder="Nombre del cliente">
+        <div class="total">
+          <strong>{{ method === 'delivery' ? 'Total de platos' : 'Total' }}</strong>
+          <strong>{{ price(total()) }}</strong>
+        </div>
+        <fieldset class="fulfillment">
+          <legend>¿Cómo quieres recibir tu pedido?</legend>
+          <div class="methods">
+            <button type="button" class="method" [attr.aria-pressed]="method === 'pickup'" (click)="method = 'pickup'">
+              <span aria-hidden="true">📍</span> Recojo en local
+            </button>
+            <button type="button" class="method" [attr.aria-pressed]="method === 'delivery'" (click)="method = 'delivery'">
+              <span aria-hidden="true">🛵</span> Delivery
+            </button>
+          </div>
+        </fieldset>
+        @if (method === 'delivery') {
+          <p class="hint">El restaurante te confirmará el costo de envío por WhatsApp.</p>
+        }
+        <label>Nombres y apellidos
+          <input name="customer" [(ngModel)]="name" required maxlength="80" autocomplete="name" placeholder="Tu nombre completo">
         </label>
+        <label>Número de teléfono
+          <input #phoneField type="tel" name="phone" inputmode="numeric" required pattern="[0-9]{9}"
+            autocomplete="tel-national" placeholder="Ej. 987654321" [value]="phone"
+            (input)="updatePhone(phoneField)" (blur)="phoneTouched = true"
+            [attr.aria-invalid]="phoneTouched && !validPhone ? 'true' : null"
+            [attr.aria-describedby]="phoneTouched && !validPhone ? 'order-phone-error' : null">
+          @if (phoneTouched && !validPhone) {
+            <small class="field-error" id="order-phone-error">Ingresa exactamente 9 dígitos.</small>
+          }
+        </label>
+        @if (method === 'delivery') {
+          <label>Dirección de entrega
+            <input name="address" [(ngModel)]="address" required maxlength="180" autocomplete="street-address"
+              placeholder="Calle, número y distrito">
+          </label>
+          <label>Referencia de entrega
+            <input name="reference" [(ngModel)]="reference" required maxlength="180"
+              placeholder="Ej. Puerta negra, frente al parque">
+          </label>
+        }
         <label><span>Observaciones <small>(opcional)</small></span>
           <textarea name="notes" [(ngModel)]="notes" maxlength="400" rows="2" placeholder="Indicaciones para tu pedido"></textarea>
         </label>
-        @if (name.trim()) {
-          <a [href]="checkoutUrl" class="send" target="_blank" rel="noopener noreferrer">Enviar pedido por WhatsApp</a>
+        @if (checkoutUrl; as url) {
+          <a [href]="url" class="send" referrerpolicy="no-referrer">Continuar a WhatsApp <span aria-hidden="true">↗</span></a>
+          <p class="hint">Revisa y envía el mensaje desde WhatsApp para que el restaurante confirme tu pedido.</p>
         } @else {
-          <button type="button" class="send" disabled>Enviar pedido por WhatsApp</button>
+          <button type="button" class="send" disabled>Continuar a WhatsApp</button>
+          <p class="hint">Completa los datos {{ method === 'delivery' ? 'de contacto y entrega' : 'de contacto' }} para continuar.</p>
         }
-        <p class="hint">Revisa y envía el mensaje desde WhatsApp para que el restaurante confirme tu pedido.</p>
       </div>
     }
   </section>

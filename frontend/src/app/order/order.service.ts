@@ -3,12 +3,22 @@ import { Product } from '../menu/menu';
 
 const STORAGE_KEY = 'kinsa-order';
 const MAX_QUANTITY = 99;
-export const WHATSAPP = 'https://wa.me/51963157142';
+const WHATSAPP_NUMBER = '51963157142';
+export const WHATSAPP = `https://wa.me/${WHATSAPP_NUMBER}`;
 
 export interface OrderLine {
   product: Product;
   quantity: number;
   subtotal: number;
+}
+
+export type Fulfillment = { kind: 'pickup' } | { kind: 'delivery'; address: string; reference: string };
+
+export interface CheckoutDetails {
+  name: string;
+  phone: string;
+  fulfillment: Fulfillment;
+  notes: string;
 }
 
 export function soles(cents: number): string {
@@ -58,23 +68,34 @@ export class OrderService {
     });
   }
 
-  whatsappUrl(lines: OrderLine[], name: string, notes: string): string {
+  whatsappUrl(lines: OrderLine[], { name, phone, fulfillment, notes }: CheckoutDetails): string {
     const total = lines.reduce((sum, line) => sum + line.subtotal, 0);
+    const delivery = fulfillment.kind === 'delivery';
     const message = [
-      'Hola, Kinsa T’iqsi. Quisiera realizar el siguiente pedido:',
+      '🛒 *NUEVO PEDIDO · KINSA T’IQSI*',
       '',
       ...lines.map(({ product, quantity, subtotal }) =>
-        `- ${quantity} × ${product.name} — ${soles(subtotal)}`,
+        `🍽️ *${product.name}*\n📦 Cantidad: ${quantity}\n💰 Subtotal: ${soles(subtotal)}\n`,
       ),
+      '━━━━━━━━━━━━━━━━━━',
+      `💵 *${delivery ? 'TOTAL DE PLATOS' : 'TOTAL'}: ${soles(total)}*`,
+      ...(delivery ? ['Costo de delivery por confirmar.'] : []),
       '',
-      `*Total: ${soles(total)}*`,
-      '',
-      `*Nombre:* ${name.trim()}`,
-      `*Observaciones:* ${notes.trim() || 'Sin observaciones'}`,
-      '',
-      'Quedo atento a la confirmación. ¡Gracias!',
+      '📋 *DATOS DEL CLIENTE*',
+      `👤 Nombre: ${name.trim()}`,
+      `📱 Teléfono: ${phone}`,
+      delivery ? '🛵 *Delivery*' : '📍 *Recojo en local*',
+      ...(delivery ? [
+        `🏠 Dirección: ${fulfillment.address.trim()}`,
+        `📍 Referencia: ${fulfillment.reference.trim()}`,
+      ] : []),
+      ...(notes.trim() ? ['', `📝 Observaciones: ${notes.trim()}`] : []),
     ].join('\n');
-    return `${WHATSAPP}?text=${encodeURIComponent(message)}`;
+    // El redireccionamiento de wa.me reemplaza algunos emojis del pedido.
+    const url = new URL('https://api.whatsapp.com/send/');
+    url.searchParams.set('phone', WHATSAPP_NUMBER);
+    url.searchParams.set('text', message);
+    return url.href;
   }
 
   private restore(): Record<string, number> {

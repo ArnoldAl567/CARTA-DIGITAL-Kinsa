@@ -12,7 +12,7 @@ function searchable(value: string): string {
 }
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-menu',
   imports: [ProductCard, OrderDrawer, SiteFooter],
   templateUrl: './app.html',
   styleUrl: './app.css',
