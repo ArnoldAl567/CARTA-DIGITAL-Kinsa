@@ -41,13 +41,45 @@
           <p>{{ count() }} de {{ data.limit }} platos · {{ active() }} visibles</p>
         }
       </div>
-      @if (catalog(); as data) {
-        <button type="button" class="primary" (click)="edit()"
-          [disabled]="count() >= data.limit || !!draft() || busy()">+ Nuevo plato</button>
-      }
+      <div class="heading-actions">
+        <button id="cambiar-contrasena" type="button" class="secondary" [disabled]="busy()"
+          [attr.aria-expanded]="changingPassword()" (click)="togglePassword()">Cambiar contraseña</button>
+        @if (catalog(); as data) {
+          <button type="button" class="primary" (click)="edit()"
+            [disabled]="count() >= data.limit || !!draft() || busy()">+ Nuevo plato</button>
+        }
+      </div>
     </div>
 
     @if (saved()) { <p class="notice success" role="status">{{ saved() }}</p> }
+    @if (changingPassword()) {
+      <section class="panel editor password-panel" aria-labelledby="password-title">
+        <h2 id="password-title">Cambiar contraseña</h2>
+        <form #passwordForm="ngForm" (ngSubmit)="changePassword(passwordForm)">
+          <div class="fields">
+            <input hidden type="email" [value]="account()" autocomplete="username">
+            <label>Contraseña actual
+              <input id="contrasena-actual" name="current_password" type="password" ngModel required
+                maxlength="72" autocomplete="current-password" [readOnly]="busy()">
+            </label>
+            <label>Contraseña nueva
+              <input name="password" type="password" ngModel required minlength="12" maxlength="72"
+                autocomplete="new-password" aria-describedby="password-hint" [readOnly]="busy()">
+            </label>
+            <p id="password-hint" class="password-hint">Usa al menos 12 caracteres.</p>
+            <label>Repite la contraseña nueva
+              <input name="password_confirmation" type="password" ngModel required maxlength="72"
+                autocomplete="new-password" [readOnly]="busy()">
+            </label>
+          </div>
+          @if (passwordError()) { <p class="alert" role="alert">{{ passwordError() }}</p> }
+          <div class="form-actions">
+            <button type="button" class="secondary" (click)="togglePassword()" [disabled]="busy()">Cancelar</button>
+            <button type="submit" class="primary" [disabled]="passwordForm.invalid || busy()">Guardar contraseña</button>
+          </div>
+        </form>
+      </section>
+    }
     @if (error() && !draft()) {
       <div class="notice alert" role="alert">
         {{ error() }}

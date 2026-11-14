@@ -32,6 +32,9 @@ button:disabled { opacity: .53; }
 .secondary:hover:not(:disabled) { background: #fce8e4; }
 .heading { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 14px; margin-bottom: 18px; }
 .editor { margin-bottom: 18px; }
+.heading-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.password-panel { max-width: 550px; }
+.password-hint { margin-top: -8px; color: var(--muted); font-size: .84rem; }
 .form-layout, .pair { display: grid; gap: 14px; }
 .pair { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); }
 .check { display: flex; gap: 9px; align-items: center; min-height: 42px; cursor: pointer; }

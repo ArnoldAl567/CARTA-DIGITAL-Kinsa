@@ -47,6 +47,8 @@ export class Admin {
   readonly busy = signal(false);
   readonly error = signal('');
   readonly saved = signal('');
+  readonly changingPassword = signal(false);
+  readonly passwordError = signal('');
   readonly search = signal('');
   readonly draft = signal<Draft | null>(null);
   readonly preview = signal('');
@@ -103,6 +105,46 @@ export class Admin {
         this.busy.set(false);
       },
       error: (error) => this.fail(error),
+    });
+  }
+
+  togglePassword(): void {
+    this.passwordError.set('');
+    this.changingPassword.update((open) => !open);
+    if (this.changingPassword()) {
+      requestAnimationFrame(() => document.getElementById('contrasena-actual')?.focus());
+    } else {
+      requestAnimationFrame(() => document.getElementById('cambiar-contrasena')?.focus());
+    }
+  }
+
+  changePassword(form: NgForm): void {
+    if (form.invalid || this.busy()) return;
+    if (form.value.password !== form.value.password_confirmation) {
+      this.passwordError.set('Las contraseñas nuevas no coinciden.');
+      return;
+    }
+
+    this.busy.set(true);
+    this.passwordError.set('');
+    this.saved.set('');
+    this.http.patch(API + '/contrasena', form.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: () => {
+        form.resetForm();
+        this.busy.set(false);
+        this.togglePassword();
+        this.saved.set('Tu contraseña se cambió correctamente.');
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 401 || error.status === 419) {
+          this.fail(error);
+          return;
+        }
+        this.busy.set(false);
+        this.passwordError.set(error.status === 422 ? error.error?.message ?? 'Revisa las contraseñas.'
+          : error.status === 429 ? 'Demasiados intentos. Espera un minuto y vuelve a intentarlo.'
+          : 'No se pudo cambiar la contraseña. Vuelve a intentarlo.');
+      },
     });
   }
 
@@ -207,6 +249,8 @@ export class Admin {
     this.catalog.set(null);
     this.search.set('');
     this.saved.set('');
+    this.changingPassword.set(false);
+    this.passwordError.set('');
     this.cancel();
   }
 

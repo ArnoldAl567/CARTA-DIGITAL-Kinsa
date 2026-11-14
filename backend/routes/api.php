@@ -15,6 +15,7 @@ Route::middleware('web')->prefix('administrar')->group(function (): void {
 
     Route::middleware('auth')->group(function (): void {
         Route::delete('/sesion', [AdminSessionController::class, 'destroy']);
+        Route::patch('/contrasena', [AdminSessionController::class, 'updatePassword'])->middleware('throttle:5,1');
         Route::get('/platos', [AdminCatalogController::class, 'index']);
         Route::post('/platos', [AdminCatalogController::class, 'store']);
         Route::patch('/platos/{product}', [AdminCatalogController::class, 'update'])->whereNumber('product');

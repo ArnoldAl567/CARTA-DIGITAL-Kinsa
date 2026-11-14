@@ -13,6 +13,27 @@ class AdminCatalogTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_password_change_requires_the_current_password_and_confirmation(): void
+    {
+        $email = 'dueno@example.com';
+        $current = 'anterior-123456';
+        $new = 'actualizada-123456';
+        User::create(['email' => $email, 'password' => $current]);
+        $path = '/api/administrar/contrasena';
+        $data = ['current_password' => $current, 'password' => $new, 'password_confirmation' => $new];
+
+        $this->patchJson($path, $data)->assertUnauthorized();
+        $this->postJson('/api/administrar/sesion', ['email' => $email, 'password' => $current])->assertOk();
+        $this->patchJson($path, [...$data, 'current_password' => 'incorrecta'])
+            ->assertUnprocessable()->assertJsonValidationErrors('current_password');
+        $this->patchJson($path, [...$data, 'password_confirmation' => 'distinta'])
+            ->assertUnprocessable()->assertJsonValidationErrors('password');
+        $this->patchJson($path, $data)->assertOk()->assertJsonPath('email', $email);
+        $this->deleteJson('/api/administrar/sesion')->assertOk();
+        $this->postJson('/api/administrar/sesion', ['email' => $email, 'password' => $current])->assertUnprocessable();
+        $this->postJson('/api/administrar/sesion', ['email' => $email, 'password' => $new])->assertOk();
+    }
+
     public function test_admin_can_edit_the_catalog_and_control_what_the_public_sees(): void
     {
         $this->seed();
