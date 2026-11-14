@@ -42,6 +42,7 @@ export class Admin {
   private photo?: File;
 
   readonly account = signal<string | null>(null);
+  readonly showLoginPassword = signal(false);
   readonly catalog = signal<Catalog | null>(null);
   readonly loading = signal(true);
   readonly busy = signal(false);
@@ -88,6 +89,7 @@ export class Admin {
     this.http.post<{ email: string }>(API + '/sesion', form.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ email }) => {
         form.resetForm();
+        this.showLoginPassword.set(false);
         this.account.set(email);
         this.busy.set(false);
         this.loadCatalog();

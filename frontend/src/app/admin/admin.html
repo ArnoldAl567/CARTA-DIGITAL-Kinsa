@@ -25,9 +25,18 @@
         <label>Correo electrónico
           <input name="email" type="email" ngModel required email maxlength="254" autocomplete="username">
         </label>
-        <label>Contraseña
-          <input name="password" type="password" ngModel required maxlength="72" autocomplete="current-password">
-        </label>
+        <div class="login-password">
+          <label for="login-password">Contraseña</label>
+          <div class="login-password-row">
+            <input id="login-password" name="password" [type]="showLoginPassword() ? 'text' : 'password'"
+              ngModel required maxlength="72" autocomplete="current-password" autocapitalize="none" spellcheck="false">
+            <button type="button" class="secondary" aria-controls="login-password"
+              [attr.aria-label]="showLoginPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              (click)="showLoginPassword.set(!showLoginPassword())">
+              {{ showLoginPassword() ? 'Ocultar' : 'Mostrar' }}
+            </button>
+          </div>
+        </div>
         <button class="primary" type="submit" [disabled]="credentials.invalid || busy()">
           {{ busy() ? 'Ingresando…' : 'Ingresar' }}
         </button>
